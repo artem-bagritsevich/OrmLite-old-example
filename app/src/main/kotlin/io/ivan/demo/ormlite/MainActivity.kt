@@ -1,46 +1,51 @@
 package io.ivan.demo.ormlite
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import io.ivan.demo.ormlite.databinding.ActivityMainBinding
 import io.ivan.demo.ormlite.db.dao.Table
 import io.ivan.demo.ormlite.db.dao.TableDao
 import io.ivan.demo.ormlite.db.DatabaseHelper
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
+
+    private var _binding: ActivityMainBinding? = null
+    private val binding get() = requireNotNull(_binding)
 
     private val dao = TableDao()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        btn_create.setOnClickListener(this)
-        btn_remove.setOnClickListener(this)
-        btn_query.setOnClickListener(this)
-
+        binding.run {
+            btnCreate.setOnClickListener(this@MainActivity)
+            btnRemove.setOnClickListener(this@MainActivity)
+            btnQuery.setOnClickListener(this@MainActivity)
+        }
     }
 
     override fun onClick(view: View?) {
         when (view) {
-            btn_create -> {
+            binding.btnCreate -> {
                 for (id in 1..10) {
                     dao.add(Table(null, id.toString(), ('a' + id - 1).toString()))
                 }
                 Toast.makeText(this, "create success", Toast.LENGTH_SHORT).show()
 
             }
-            btn_remove -> {
-                dao.removeAll();
+            binding.btnRemove -> {
+                dao.removeAll()
                 Toast.makeText(this, "remove success", Toast.LENGTH_SHORT).show()
             }
-            btn_query -> {
+            binding.btnQuery -> {
                 val tableAll = dao.queryForAll()
                 if (tableAll.size == 0) {
                     Toast.makeText(this, "is empty", Toast.LENGTH_SHORT).show()
-                    return;
+                    return
                 }
                 val stringBuilder = StringBuilder()
                 for (table in tableAll) {
