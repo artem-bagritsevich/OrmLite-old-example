@@ -8,32 +8,31 @@ import io.ivan.demo.ormlite.db.DatabaseHelper
 @DatabaseTable(tableName = "table")
 data class Table(
 
-        @DatabaseField(generatedId = true)
-        var id: Int? = null,
+    @DatabaseField(generatedId = true)
+    var id: Int? = null,
 
-        @DatabaseField
-        var category: String = "",
+    @DatabaseField
+    var category: String = "",
 
-        @DatabaseField
-        var content: String = ""
+    @DatabaseField
+    var content: String = ""
 )
 
 class TableDao {
 
     private val dao = DatabaseHelper.getDao(Table::class.java)
 
-    fun add(table: Table) = dao.createOrUpdate(table)
+    fun add(table: Table): Dao.CreateOrUpdateStatus = dao.createOrUpdate(table)
 
     fun update(table: Table) = dao.update(table)
 
     fun delete(table: Table) = dao.delete(table)
 
-    fun queryForAll() = dao.queryForAll()
+    fun queryForAll(): MutableList<Table> = dao.queryForAll()
 
     fun removeAll() {
         for (table in queryForAll()) {
             dao.delete(table)
         }
     }
-
 }
