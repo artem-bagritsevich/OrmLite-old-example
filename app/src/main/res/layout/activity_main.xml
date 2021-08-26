@@ -5,21 +5,45 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/btn_create"
+        android:id="@+id/btnCreate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="create  10  into  db" />
 
     <Button
-        android:id="@+id/btn_remove"
+        android:id="@+id/btnRemove"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="remove  all" />
 
     <Button
-        android:id="@+id/btn_query"
+        android:id="@+id/btnQuery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="query  all" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:background="@android:color/transparent"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="Queries result:" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp">
+        <TextView
+            android:id="@+id/resultTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            android:hint="Queries result"/>
+    </ScrollView>
 
 </LinearLayout>
