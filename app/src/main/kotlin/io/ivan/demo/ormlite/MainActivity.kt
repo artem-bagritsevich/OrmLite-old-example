@@ -2,58 +2,57 @@ package io.ivan.demo.ormlite
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
+import com.j256.ormlite.dao.Dao
+import io.ivan.demo.ormlite.databinding.ActivityMainBinding
 import io.ivan.demo.ormlite.db.dao.Table
-import io.ivan.demo.ormlite.db.dao.TableDao
 import io.ivan.demo.ormlite.db.DatabaseHelper
-import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity() {
 
-    private val dao = TableDao()
+    private var _binding: ActivityMainBinding? = null
+    private val binding: ActivityMainBinding get() = requireNotNull(_binding)
+
+    private val list = mutableListOf<Table>()
+    private val dao: Dao<Table, Int>? = DatabaseHelper(this).getTableDao()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        btn_create.setOnClickListener(this)
-        btn_remove.setOnClickListener(this)
-        btn_query.setOnClickListener(this)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-    }
+        val resultTextView = binding.resultTextView
 
-    override fun onClick(view: View?) {
-        when (view) {
-            btn_create -> {
-                for (id in 1..10) {
-                    dao.add(Table(null, id.toString(), ('a' + id - 1).toString()))
-                }
-                Toast.makeText(this, "create success", Toast.LENGTH_SHORT).show()
-
+        binding.btnCreate.setOnClickListener {
+            for (id in 1..10) {
+                dao?.create(Table(null, id.toString(), ('a' + id - 1).toString()))
             }
-            btn_remove -> {
-                dao.removeAll();
-                Toast.makeText(this, "remove success", Toast.LENGTH_SHORT).show()
+            resultTextView.text = getString(R.string.create_success)
+            dao?.apply {
+                queryForAll().forEach { list.add(it) }
             }
-            btn_query -> {
-                val tableAll = dao.queryForAll()
-                if (tableAll.size == 0) {
-                    Toast.makeText(this, "is empty", Toast.LENGTH_SHORT).show()
-                    return;
-                }
-                val stringBuilder = StringBuilder()
-                for (table in tableAll) {
-                    stringBuilder.append(table.toString())
-                    stringBuilder.append("\n")
-                }
-                Toast.makeText(this, stringBuilder.toString(), Toast.LENGTH_LONG).show()
+        }
+        binding.btnRemove.setOnClickListener {
+            if (list.isNotEmpty()) {
+                dao?.delete(list)
+                list.clear()
+                resultTextView.text = getString(R.string.remove_success)
+            } else {
+                resultTextView.text = getString(R.string.db_empty)
             }
+        }
+        binding.btnQuery.setOnClickListener {
+            if (list.isEmpty()) {
+                resultTextView.text = getString(R.string.db_empty)
+                return@setOnClickListener
+            }
+            resultTextView.text = list.toString()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        DatabaseHelper.close()
+        _binding = null
+        DatabaseHelper(this).close()
     }
 }

@@ -1,14 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "26.0.0"
+    compileSdkVersion 29
+    buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "io.ivan.demo.ormlite"
         minSdkVersion 15
-        targetSdkVersion 26
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -24,15 +23,31 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:+', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support:support-v4:28.0.0'
-    testImplementation 'junit:junit:+'
-    implementation 'com.android.support.constraint:constraint-layout:+'
-    implementation 'com.j256.ormlite:ormlite-android:+'
+    /*implementation 'com.android.support:support-v4:28.0.0'*/
+    testImplementation 'junit:junit:4.13.2'
+    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+
+    // ORM Lite
+    def ormlite_version = "5.6"
+    implementation "com.j256.ormlite:ormlite-core:$ormlite_version"
+    implementation "com.j256.ormlite:ormlite-android:$ormlite_version"
 }
